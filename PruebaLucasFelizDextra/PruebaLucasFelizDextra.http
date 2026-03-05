@@ -1,0 +1,6 @@
+@PruebaLucasFelizDextra_HostAddress = https://localhost:7040
+
+GET {{PruebaLucasFelizDextra_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
