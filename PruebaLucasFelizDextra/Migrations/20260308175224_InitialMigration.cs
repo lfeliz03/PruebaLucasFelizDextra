@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PruebaLucasFelizDextra.Migrations
 {
     /// <inheritdoc />
@@ -177,8 +179,7 @@ namespace PruebaLucasFelizDextra.Migrations
                     Libro_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Titulo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Autor_Id = table.Column<int>(type: "int", nullable: true),
-                    Autor_Id1 = table.Column<int>(type: "int", nullable: true),
+                    Autor_Id = table.Column<int>(type: "int", nullable: false),
                     AnoPublicacion = table.Column<int>(type: "int", nullable: false),
                     Genero = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
@@ -186,10 +187,11 @@ namespace PruebaLucasFelizDextra.Migrations
                 {
                     table.PrimaryKey("PK_Libros", x => x.Libro_Id);
                     table.ForeignKey(
-                        name: "FK_Libros_Autores_Autor_Id1",
-                        column: x => x.Autor_Id1,
+                        name: "FK_Libros_Autores_Autor_Id",
+                        column: x => x.Autor_Id,
                         principalTable: "Autores",
-                        principalColumn: "Autor_Id");
+                        principalColumn: "Autor_Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,8 +200,7 @@ namespace PruebaLucasFelizDextra.Migrations
                 {
                     Prestamo_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Libro_Id = table.Column<int>(type: "int", nullable: true),
-                    Libro_Id1 = table.Column<int>(type: "int", nullable: true),
+                    Libro_Id = table.Column<int>(type: "int", nullable: false),
                     FechaPrestamo = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -207,10 +208,21 @@ namespace PruebaLucasFelizDextra.Migrations
                 {
                     table.PrimaryKey("PK_Prestamos", x => x.Prestamo_Id);
                     table.ForeignKey(
-                        name: "FK_Prestamos_Libros_Libro_Id1",
-                        column: x => x.Libro_Id1,
+                        name: "FK_Prestamos_Libros_Libro_Id",
+                        column: x => x.Libro_Id,
                         principalTable: "Libros",
-                        principalColumn: "Libro_Id");
+                        principalColumn: "Libro_Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Autores",
+                columns: new[] { "Autor_Id", "Nacionalidad", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "Dominicano", "Américo Lugo" },
+                    { 2, "Mexicano", "Gabriel García Márquez" },
+                    { 3, "Venezolano", "Miguel de Cervantes" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -253,14 +265,14 @@ namespace PruebaLucasFelizDextra.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Libros_Autor_Id1",
+                name: "IX_Libros_Autor_Id",
                 table: "Libros",
-                column: "Autor_Id1");
+                column: "Autor_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prestamos_Libro_Id1",
+                name: "IX_Prestamos_Libro_Id",
                 table: "Prestamos",
-                column: "Libro_Id1");
+                column: "Libro_Id");
         }
 
         /// <inheritdoc />

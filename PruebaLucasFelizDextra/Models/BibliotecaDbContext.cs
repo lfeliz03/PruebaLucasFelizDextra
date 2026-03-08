@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace PruebaLucasFelizDextra.Models
 {
@@ -17,6 +18,17 @@ namespace PruebaLucasFelizDextra.Models
                         new Autor { Autor_Id = 2, Nombre = "Gabriel García Márquez", Nacionalidad = "Mexicano" },
                         new Autor { Autor_Id = 3, Nombre = "Miguel de Cervantes", Nacionalidad = "Venezolano" }
                     ));
+            // Relación Autor (1) - Libro (N)
+            builder.Entity<Libro>()
+                .HasOne(l => l.Autor)
+                .WithMany(a => a.Libros)
+                .HasForeignKey(l => l.Autor_Id);
+
+            // Relación Libro (1) - Prestamo (N)
+            builder.Entity<Prestamo>()
+                .HasOne(p => p.Libro)
+                .WithMany(l => l.Prestamos)
+                .HasForeignKey(p => p.Libro_Id);
             base.OnModelCreating(builder);
         }
         public DbSet<Autor> Autores { get; set; }

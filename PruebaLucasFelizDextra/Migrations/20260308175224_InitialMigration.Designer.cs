@@ -12,8 +12,8 @@ using PruebaLucasFelizDextra.Models;
 namespace PruebaLucasFelizDextra.Migrations
 {
     [DbContext(typeof(BibliotecaDbContext))]
-    [Migration("20260306212811_AddAuthorsData")]
-    partial class AddAuthorsData
+    [Migration("20260308175224_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -277,10 +277,7 @@ namespace PruebaLucasFelizDextra.Migrations
                     b.Property<int>("AnoPublicacion")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Autor_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Autor_Id1")
+                    b.Property<int>("Autor_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Genero")
@@ -295,7 +292,7 @@ namespace PruebaLucasFelizDextra.Migrations
 
                     b.HasKey("Libro_Id");
 
-                    b.HasIndex("Autor_Id1");
+                    b.HasIndex("Autor_Id");
 
                     b.ToTable("Libros");
                 });
@@ -314,15 +311,12 @@ namespace PruebaLucasFelizDextra.Migrations
                     b.Property<DateTime>("FechaPrestamo")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Libro_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Libro_Id1")
+                    b.Property<int>("Libro_Id")
                         .HasColumnType("int");
 
                     b.HasKey("Prestamo_Id");
 
-                    b.HasIndex("Libro_Id1");
+                    b.HasIndex("Libro_Id");
 
                     b.ToTable("Prestamos");
                 });
@@ -381,8 +375,10 @@ namespace PruebaLucasFelizDextra.Migrations
             modelBuilder.Entity("PruebaLucasFelizDextra.Models.Libro", b =>
                 {
                     b.HasOne("PruebaLucasFelizDextra.Models.Autor", "Autor")
-                        .WithMany()
-                        .HasForeignKey("Autor_Id1");
+                        .WithMany("Libros")
+                        .HasForeignKey("Autor_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Autor");
                 });
@@ -390,10 +386,22 @@ namespace PruebaLucasFelizDextra.Migrations
             modelBuilder.Entity("PruebaLucasFelizDextra.Models.Prestamo", b =>
                 {
                     b.HasOne("PruebaLucasFelizDextra.Models.Libro", "Libro")
-                        .WithMany()
-                        .HasForeignKey("Libro_Id1");
+                        .WithMany("Prestamos")
+                        .HasForeignKey("Libro_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Libro");
+                });
+
+            modelBuilder.Entity("PruebaLucasFelizDextra.Models.Autor", b =>
+                {
+                    b.Navigation("Libros");
+                });
+
+            modelBuilder.Entity("PruebaLucasFelizDextra.Models.Libro", b =>
+                {
+                    b.Navigation("Prestamos");
                 });
 #pragma warning restore 612, 618
         }

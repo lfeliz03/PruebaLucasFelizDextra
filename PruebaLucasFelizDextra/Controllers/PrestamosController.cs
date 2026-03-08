@@ -19,27 +19,28 @@ namespace PruebaLucasFelizDextra.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NoDevueltoResponseDto>>> GetNoDevueltos()
         {
-            var noDevueltos = _context.Prestamos.Where(p => p.FechaDevolucion == null)
-                .Include(l => l.Libro).ThenInclude(a => a.Autor);
+            var noDevueltos = _context.Prestamos
+                .Include(l => l.Libro).ThenInclude(a => a.Autor)
+                .Where(p => p.FechaDevolucion == null);
             var noDevueltosResult = await noDevueltos.Select(n => new NoDevueltoResponseDto
             {
-                Autor_Id = n.Libro.Autor.Autor_Id,
+                Autor_Id = n.Libro.Autor_Id,
                 Nombre = n.Libro.Autor.Nombre,
-                Libro_Id = (int)n.Libro_Id,
+                Libro_Id = n.Libro_Id,
                 Titulo = n.Libro.Titulo
             }).ToListAsync();
             return Ok(noDevueltosResult);
         }
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddPrestamo([FromBody] int libro_Id)
+        public async Task<IActionResult> AddPrestamo(int libro_Id)
         {
             var libro = _context.Libros.Find(libro_Id);
             if (libro is null)
-                return NotFound();
+                return NotFound("Libro no encontrado");
             var prestamo = new Prestamo()
             {
-                Libro_Id = libro_Id,
+                Libro = libro,
                 FechaPrestamo = DateTime.Now
             };
             _context.Prestamos.Add(prestamo);
@@ -57,7 +58,7 @@ namespace PruebaLucasFelizDextra.Controllers
             prestamo.FechaDevolucion = DateTime.Now;
             _context.Prestamos.Update(prestamo);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok("Libro devuelto correctamente");
         }
         [HttpDelete("{prestamo_Id}")]
         [Authorize]
@@ -68,7 +69,7 @@ namespace PruebaLucasFelizDextra.Controllers
                 return NotFound();
             _context.Prestamos.Remove(prestamo);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok("Libro eliminado correctamente");
         }
     }
 }

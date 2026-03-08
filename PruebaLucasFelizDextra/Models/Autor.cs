@@ -10,5 +10,6 @@ namespace PruebaLucasFelizDextra.Models
         public required string Nombre { get; set; }
         [StringLength(100)]
         public required string Nacionalidad { get; set; }
+        public ICollection<Libro> Libros { get; set; } = new List<Libro>();
     }
 }

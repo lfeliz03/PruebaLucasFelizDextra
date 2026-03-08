@@ -9,10 +9,11 @@ namespace PruebaLucasFelizDextra.Models
         public int Libro_Id { get; set; }
         [StringLength(50)]
         public required string Titulo { get; set; }
-        public int? Autor_Id { get; set; }
-        public Autor? Autor { get; set; }
+        public int Autor_Id { get; set; }
+        public Autor Autor { get; set; }
         public required int AnoPublicacion { get; set; }
         [StringLength(50)]
         public required string Genero { get; set; }
+        public List<Prestamo> Prestamos { get; set; } = new List<Prestamo>();
     }
 }
